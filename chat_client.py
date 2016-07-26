@@ -7,7 +7,7 @@ def send_message():
 
 
 def setup_connection():
-    ip = '10.0.17.55'
+    ip = '127.0.0.1'
     port = '9009'
     s = socket.socket()
     s.connect((ip, 9009))
@@ -21,4 +21,3 @@ if __name__ == '__main__':
         if not buffer:
             break
         print(buffer.decode())
-
