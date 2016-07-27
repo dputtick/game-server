@@ -23,7 +23,7 @@ def output_printer(curr_addr, ttl):
 
 
 def decode_packet(packet_data):
-    pass
+    print(packet_data[0].decode('ascii'))
 
 
 def main(destination_hostname):
@@ -34,7 +34,8 @@ def main(destination_hostname):
     udp_info = s.getprotobyname('udp')
     # initialize the time to live to 1, which we will then increment
     ttl = 1
-    MAX_HOPS = 30
+    MAX_HOPS = 2
+    packet_data_list = []
     while True:
         # open the receiving socket, type is UDP using the ICMP protocol
         recv_socket = s.socket(s.AF_INET, s.SOCK_DGRAM, icmp_info)
@@ -50,13 +51,14 @@ def main(destination_hostname):
         curr_addr = None
         try:
             packet_data, curr_addr = recv_socket.recvfrom(512)
+            packet_length = len(packet_data)
+            packet_data_list.append(packet_data)
             curr_addr = curr_addr[0]
         except s.error:
             pass
         finally:
             recv_socket.close()
             send_socket.close()
-
         # print data
         output_printer(curr_addr, ttl)
 
@@ -66,6 +68,7 @@ def main(destination_hostname):
         # break if finished
         if curr_addr == dest_ip or ttl > MAX_HOPS:
             break
+    decode_packet(packet_data_list)
 
 
 if __name__ == '__main__':
